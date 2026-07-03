@@ -13,7 +13,7 @@ class MainViewModel(
 ) : ViewModel() {
 
     val userIntent = Channel<MainIntent>(Channel.UNLIMITED)
-    var state = mutableStateOf<MainState>(MainState.Idle)
+    var uiState = mutableStateOf<MainState>(MainState.Idle)
         private set
 
     init {
@@ -32,8 +32,8 @@ class MainViewModel(
 
     private fun fetchAnimals() {
         viewModelScope.launch {
-            state.value = MainState.Loading
-            state.value = try {
+            uiState.value = MainState.Loading
+            uiState.value = try {
                 MainState.Animals(repo.getAnimals())
             } catch (e: Exception) {
                 MainState.Error(e.localizedMessage)

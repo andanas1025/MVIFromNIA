@@ -22,6 +22,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +40,7 @@ import com.globant.mvitest.api.AnimalRepo
 import com.globant.mvitest.api.AnimalService
 import com.globant.mvitest.model.Animal
 import com.globant.mvitest.ui.theme.MVITestTheme
+import com.globant.mvitest.ui.util.isSystemInDarkTheme
 import com.globant.mvitest.view.MainIntent
 import com.globant.mvitest.view.MainState
 import com.globant.mvitest.view.MainViewModel
@@ -53,6 +57,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        var themeSettings by mutableStateOf(
+            ThemeSettings(
+                darkTheme = resources.configuration.isSystemInDarkTheme,
+                androidTheme = false, // Default fallback, or read from mainViewModel
+                disableDynamicTheming = false // Default fallback, or read from mainViewModel
+            )
+        )
+
         val onButtonClick: () -> Unit = {
             lifecycleScope.launch {
                 mainViewModel.userIntent.send(MainIntent.FetchAnimals)
@@ -60,8 +72,23 @@ class MainActivity : ComponentActivity() {
         }
 
         splashScreen.setKeepOnScreenCondition {
-            mainViewModel.state.value is MainState.Loading
+            mainViewModel.uiState.value is MainState.Loading
         }
+
+//        lifecycleScope.launch {
+//            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                mainViewModel.uiState.collect { state ->
+//                    if (state is MainState.Animals) {
+//                        // Assuming your Success state contains user settings configuration
+//                        themeSettings = ThemeSettings(
+//                            darkTheme = state.userPreferences.shouldUseDarkMode ?: resources.configuration.isSystemInDarkTheme,
+//                            androidTheme = state.userPreferences.useAndroidTheme,
+//                            disableDynamicTheming = state.userPreferences.disableDynamicTheming
+//                        )
+//                    }
+//                }
+//            }
+//        }
 
         setContent {
             MVITestTheme {
@@ -79,7 +106,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(vm: MainViewModel, onButtonClick: () -> Unit, modifier: Modifier) {
-    val state = vm.state.value
+    val state = vm.uiState.value
     when (state) {
         is MainState.Idle -> IdleScreen(onButtonClick)
         is MainState.Loading -> LoadingScreen()
@@ -155,3 +182,9 @@ fun GreetingPreview() {
     MVITestTheme {
     }
 }
+
+data class ThemeSettings(
+    val darkTheme: Boolean,
+    val androidTheme: Boolean,
+    val disableDynamicTheming: Boolean,
+)
