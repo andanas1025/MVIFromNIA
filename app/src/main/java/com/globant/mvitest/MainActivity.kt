@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -31,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import coil.compose.rememberImagePainter
 import com.globant.mvitest.api.AnimalRepo
@@ -49,6 +49,7 @@ class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModels { ViewModelFactory(animalRepo) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
@@ -58,10 +59,18 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        splashScreen.setKeepOnScreenCondition {
+            mainViewModel.state.value is MainState.Loading
+        }
+
         setContent {
             MVITestTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainScreen(mainViewModel, onButtonClick)
+                    MainScreen(
+                        mainViewModel,
+                        onButtonClick,
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }
@@ -69,7 +78,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(vm: MainViewModel, onButtonClick: () -> Unit) {
+fun MainScreen(vm: MainViewModel, onButtonClick: () -> Unit, modifier: Modifier) {
     val state = vm.state.value
     when (state) {
         is MainState.Idle -> IdleScreen(onButtonClick)
