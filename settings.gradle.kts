@@ -21,3 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "MVITest"
 include(":app")
+include(":core:data")
+include(":app-catalog")
+include(":benchmark:macro")
+include(":benchmark:micro")
