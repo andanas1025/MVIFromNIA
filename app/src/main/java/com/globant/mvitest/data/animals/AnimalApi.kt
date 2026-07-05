@@ -1,4 +1,4 @@
-package com.globant.mvitest.data.api
+package com.globant.mvitest.data.animals
 
 import com.globant.mvitest.data.model.Animal
 import retrofit2.http.GET

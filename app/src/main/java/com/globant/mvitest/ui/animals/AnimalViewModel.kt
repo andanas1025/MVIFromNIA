@@ -2,9 +2,11 @@ package com.globant.mvitest.ui.animals
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.globant.mvitest.di.DispatcherIO
 import com.globant.mvitest.domain.GetAnimalsUseCase
 import com.globant.mvitest.ui.animals.MainAnimalIntent.FetchAnimals
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnimalViewModel @Inject constructor(
-    private val getAnimalsUseCase: GetAnimalsUseCase
+    private val getAnimalsUseCase: GetAnimalsUseCase,
+    @DispatcherIO private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<AnimalUiState>(AnimalUiState.Idle)
     val uiState: StateFlow<AnimalUiState> = _uiState.asStateFlow()
@@ -25,7 +28,7 @@ class AnimalViewModel @Inject constructor(
     }
 
     private fun fetchAnimals() {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             _uiState.value = AnimalUiState.Loading
             _uiState.value = try {
                 AnimalUiState.Success(getAnimalsUseCase())
