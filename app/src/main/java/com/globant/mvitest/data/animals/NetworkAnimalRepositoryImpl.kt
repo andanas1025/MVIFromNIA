@@ -10,6 +10,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @ViewModelScoped
@@ -25,7 +26,7 @@ class NetworkAnimalRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun refreshAnimals() {
+    override suspend fun refreshAnimals() = withContext(ioDispatcher) {
         val remoteAnimals = remoteDataSource.fetchAnimals()
         val entities = remoteAnimals.map { it.toEntity() }
         localDataSource.saveAnimals(entities)

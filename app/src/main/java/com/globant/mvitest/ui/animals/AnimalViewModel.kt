@@ -92,3 +92,11 @@ class AnimalViewModel @Inject constructor(
         }
     }
 }
+
+// Example inside a searching/filtering flow:
+//val filteredAnimals = searchQueryStateFlow
+//    .debounce(300) // ⏳ Wait 300ms for the user to stop typing before propagating downstream
+//    .distinctUntilChanged() // 🚫 If they typed "A", deleted it, and typed "A" again quickly, ignore the duplication
+//    .map { query ->
+//        getAnimalsUseCase(query)
+//    }
