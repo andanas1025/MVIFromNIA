@@ -2,11 +2,11 @@ package com.globant.mvitest.ui.animals
 
 import com.globant.mvitest.data.model.Animal
 
-sealed interface MainAnimalState {
-    data object Idle : MainAnimalState
-    data object Loading : MainAnimalState
-    data class Animals(val animals: List<Animal>) : MainAnimalState
-    data class Error(val error: String) : MainAnimalState
+sealed interface AnimalUiState {
+    data object Idle : AnimalUiState
+    data object Loading : AnimalUiState
+    data class Success(val animals: List<Animal>) : AnimalUiState
+    data class Error(val error: String) : AnimalUiState
 
     /**
      * Returns `true` if the state wasn't loaded yet and it should keep showing the splash screen.

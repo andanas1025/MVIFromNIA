@@ -34,20 +34,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberImagePainter
 import com.globant.mvitest.data.model.Animal
 import com.globant.mvitest.ui.theme.MVITestTheme
 import com.globant.mvitest.ui.util.isSystemInDarkTheme
 import com.globant.mvitest.ui.animals.MainAnimalIntent
-import com.globant.mvitest.ui.animals.MainAnimalState
-import com.globant.mvitest.ui.animals.MainAnimalViewModel
+import com.globant.mvitest.ui.animals.AnimalUiState
+import com.globant.mvitest.ui.animals.AnimalViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val mainAnimalViewModel: MainAnimalViewModel by viewModels()
+    private val animalViewModel: AnimalViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -63,13 +62,11 @@ class MainActivity : ComponentActivity() {
         )
 
         val onButtonClick: () -> Unit = {
-            lifecycleScope.launch {
-                mainAnimalViewModel.userIntent.send(MainAnimalIntent.FetchAnimals)
-            }
+            animalViewModel.onIntent(MainAnimalIntent.FetchAnimals)
         }
 
         splashScreen.setKeepOnScreenCondition {
-            mainAnimalViewModel.uiState.value is MainAnimalState.Loading
+            animalViewModel.uiState.value is AnimalUiState.Loading
         }
 
 //        lifecycleScope.launch {
@@ -91,7 +88,7 @@ class MainActivity : ComponentActivity() {
             MVITestTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainScreen(
-                        mainAnimalViewModel,
+                        animalViewModel,
                         onButtonClick,
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -102,15 +99,15 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(vm: MainAnimalViewModel, onButtonClick: () -> Unit, modifier: Modifier) {
-    val state = vm.uiState.value
+fun MainScreen(vm: AnimalViewModel, onButtonClick: () -> Unit, modifier: Modifier) {
+    val state by vm.uiState.collectAsStateWithLifecycle()
     when (state) {
-        is MainAnimalState.Idle -> IdleScreen(onButtonClick)
-        is MainAnimalState.Loading -> LoadingScreen()
-        is MainAnimalState.Animals -> AnimalList(state.animals)
-        is MainAnimalState.Error -> {
+        is AnimalUiState.Idle -> IdleScreen(onButtonClick)
+        is AnimalUiState.Loading -> LoadingScreen()
+        is AnimalUiState.Success -> AnimalList((state as AnimalUiState.Success).animals)
+        is AnimalUiState.Error -> {
             IdleScreen(onButtonClick)
-            ErrorScreen(state.error)
+            ErrorScreen((state as AnimalUiState.Error).error)
         }
     }
 }
