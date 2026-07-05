@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -26,3 +27,4 @@ include(":app-catalog")
 include(":benchmark:macro")
 include(":benchmark:micro")
 include(":core:common")
+include(":core:datastore")
