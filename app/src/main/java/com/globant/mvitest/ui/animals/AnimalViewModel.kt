@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.globant.mvitest.common.Result
 import com.globant.mvitest.data.model.Animal
 import com.globant.mvitest.di.DispatcherDefault
-import com.globant.mvitest.di.DispatcherIO
 import com.globant.mvitest.domain.GetAnimalsUseCase
 import com.globant.mvitest.domain.RefreshAnimalsUseCase
 import com.globant.mvitest.ui.animals.AnimalUiState.Idle
@@ -14,6 +13,8 @@ import com.globant.mvitest.ui.animals.AnimalUiState.Success
 import com.globant.mvitest.ui.animals.MainAnimalIntent.FetchAnimals
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -22,15 +23,23 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 @HiltViewModel
 class AnimalViewModel @Inject constructor(
-    private val getAnimalsUseCase: GetAnimalsUseCase,
+    getAnimalsUseCase: GetAnimalsUseCase,
     private val refreshAnimalsUseCase: RefreshAnimalsUseCase,
-    @DispatcherIO private val ioDispatcher: CoroutineDispatcher,
     @DispatcherDefault private val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel() {
+
+    // Keep track of the active sync job to prevent spamming multiple concurrent requests
+    private var syncJob: Job? = null
+
+    // Fallback handler for unhandled background exceptions
+    private val syncExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        _errorState.value = "Sync failed: ${throwable.localizedMessage ?: "An error occurred"}"
+    }
     val uiState: StateFlow<AnimalUiState> = getAnimalsUseCase()
         .map { result: Result<List<Animal>> ->
             when (result) {
@@ -65,12 +74,20 @@ class AnimalViewModel @Inject constructor(
     }
 
     private fun syncNetworkData() {
-        viewModelScope.launch(ioDispatcher) {
-            try {
-                _errorState.value = null
-                refreshAnimalsUseCase()
-            } catch (e: Exception) {
-                _errorState.value = e.localizedMessage ?: "Failed to sync with server"
+        // 🛡️ Throttling Check: If a sync is already running, drop subsequent clicks
+        if (syncJob?.isActive == true) return
+
+        // Launch on Main thread loop (default), letting UseCases handle inner I/O switching
+        syncJob = viewModelScope.launch(syncExceptionHandler) {
+            _errorState.value = null
+
+            // Supervisor boundary insulates concurrent tasks safely
+            supervisorScope {
+                launch {
+                    refreshAnimalsUseCase()
+                }
+
+                // Add any other independent flow launch block here if needed later!
             }
         }
     }
