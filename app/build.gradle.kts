@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-//    alias(libs.plugins.hilt)
+    alias(libs.plugins.google.dagger.hilt.android)
     kotlin("kapt")
 }
 
@@ -70,8 +70,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:1.3.2")
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-    // Hilt
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-//    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.dagger.hilt.android)
+    kapt(libs.dagger.hilt.compiler)
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 }

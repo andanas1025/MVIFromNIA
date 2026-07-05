@@ -36,21 +36,18 @@ import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import coil.compose.rememberImagePainter
-import com.globant.mvitest.api.AnimalRepo
-import com.globant.mvitest.api.AnimalService
-import com.globant.mvitest.model.Animal
+import com.globant.mvitest.data.model.Animal
 import com.globant.mvitest.ui.theme.MVITestTheme
 import com.globant.mvitest.ui.util.isSystemInDarkTheme
-import com.globant.mvitest.view.MainIntent
-import com.globant.mvitest.view.MainState
-import com.globant.mvitest.view.MainViewModel
-import com.globant.mvitest.view.ViewModelFactory
+import com.globant.mvitest.ui.animals.MainAnimalIntent
+import com.globant.mvitest.ui.animals.MainAnimalState
+import com.globant.mvitest.ui.animals.MainAnimalViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    private val animalRepo = AnimalRepo(AnimalService.api)
-    private val mainViewModel: MainViewModel by viewModels { ViewModelFactory(animalRepo) }
+    private val mainAnimalViewModel: MainAnimalViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -67,12 +64,12 @@ class MainActivity : ComponentActivity() {
 
         val onButtonClick: () -> Unit = {
             lifecycleScope.launch {
-                mainViewModel.userIntent.send(MainIntent.FetchAnimals)
+                mainAnimalViewModel.userIntent.send(MainAnimalIntent.FetchAnimals)
             }
         }
 
         splashScreen.setKeepOnScreenCondition {
-            mainViewModel.uiState.value is MainState.Loading
+            mainAnimalViewModel.uiState.value is MainAnimalState.Loading
         }
 
 //        lifecycleScope.launch {
@@ -94,7 +91,7 @@ class MainActivity : ComponentActivity() {
             MVITestTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainScreen(
-                        mainViewModel,
+                        mainAnimalViewModel,
                         onButtonClick,
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -105,13 +102,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(vm: MainViewModel, onButtonClick: () -> Unit, modifier: Modifier) {
+fun MainScreen(vm: MainAnimalViewModel, onButtonClick: () -> Unit, modifier: Modifier) {
     val state = vm.uiState.value
     when (state) {
-        is MainState.Idle -> IdleScreen(onButtonClick)
-        is MainState.Loading -> LoadingScreen()
-        is MainState.Animals -> AnimalList(state.animals)
-        is MainState.Error -> {
+        is MainAnimalState.Idle -> IdleScreen(onButtonClick)
+        is MainAnimalState.Loading -> LoadingScreen()
+        is MainAnimalState.Animals -> AnimalList(state.animals)
+        is MainAnimalState.Error -> {
             IdleScreen(onButtonClick)
             ErrorScreen(state.error)
         }
@@ -147,12 +144,13 @@ fun AnimalList(animals: List<Animal>) {
 
 @Composable
 fun AnimalItem(animal: Animal) {
+    val BASE_URL = "https://raw.githubusercontent.com/CatalinStefan/animalApi/master/"
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
     ) {
-        val url = AnimalService.BASE_URL + animal.image
+        val url = BASE_URL + animal.image
         val painter = rememberImagePainter(data = url)
         Image(
             painter = painter,

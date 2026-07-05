@@ -1,6 +1,6 @@
-package com.globant.mvitest.api
+package com.globant.mvitest.data.api
 
-import com.globant.mvitest.model.Animal
+import com.globant.mvitest.data.model.Animal
 import retrofit2.http.GET
 
 interface AnimalApi {
