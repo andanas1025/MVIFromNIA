@@ -2,7 +2,7 @@ package com.globant.mvitest.ui.animals
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.globant.mvitest.common.Result
+import com.globant.common.result.Result
 import com.globant.mvitest.data.model.Animal
 import com.globant.mvitest.di.DispatcherDefault
 import com.globant.mvitest.domain.GetAnimalsUseCase

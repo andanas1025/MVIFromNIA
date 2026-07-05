@@ -1,7 +1,7 @@
 package com.globant.mvitest.domain
 
-import com.globant.mvitest.common.Result
-import com.globant.mvitest.common.asResult
+import com.globant.common.result.Result
+import com.globant.common.result.asResult
 import com.globant.mvitest.data.animals.AnimalRepository
 import com.globant.mvitest.data.model.Animal
 import kotlinx.coroutines.flow.Flow
