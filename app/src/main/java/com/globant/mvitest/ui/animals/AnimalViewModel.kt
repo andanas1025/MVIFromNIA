@@ -2,10 +2,13 @@ package com.globant.mvitest.ui.animals
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.globant.mvitest.common.Result
+import com.globant.mvitest.data.model.Animal
 import com.globant.mvitest.di.DispatcherIO
 import com.globant.mvitest.domain.GetAnimalsUseCase
 import com.globant.mvitest.domain.RefreshAnimalsUseCase
 import com.globant.mvitest.ui.animals.AnimalUiState.Idle
+import com.globant.mvitest.ui.animals.AnimalUiState.Loading
 import com.globant.mvitest.ui.animals.AnimalUiState.Success
 import com.globant.mvitest.ui.animals.MainAnimalIntent.FetchAnimals
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,17 +29,26 @@ class AnimalViewModel @Inject constructor(
     @DispatcherIO private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     val uiState: StateFlow<AnimalUiState> = getAnimalsUseCase()
-        .map { animals ->
-            if (animals.isEmpty()) {
-                Idle
-            } else {
-                Success(animals)
+        .map { result: Result<List<Animal>> ->
+            when (result) {
+                is Result.Loading -> Loading
+                is Result.Success -> {
+                    if (result.data.isEmpty()) {
+                        Idle
+                    } else {
+                        Success(result.data)
+                    }
+                }
+
+                is Result.Error -> {
+                    AnimalUiState.Error(result.exception.localizedMessage ?: "An error occurred")
+                }
             }
         }
         .stateIn(
             scope = viewModelScope,
-            started =  SharingStarted.WhileSubscribed(5_000),
-            initialValue = AnimalUiState.Loading
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = Loading
         )
 
     private val _errorState = MutableStateFlow<String?>(null)
