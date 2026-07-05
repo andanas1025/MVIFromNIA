@@ -33,8 +33,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
-    // Hilt
-//    implementation(libs.hilt.android)
-//    kapt(libs.hilt.compiler)
-//    implementation(libs.androidx.hilt.navigation.compose)
 }

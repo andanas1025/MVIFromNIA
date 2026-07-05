@@ -4,36 +4,57 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.globant.mvitest.di.DispatcherIO
 import com.globant.mvitest.domain.GetAnimalsUseCase
+import com.globant.mvitest.domain.RefreshAnimalsUseCase
+import com.globant.mvitest.ui.animals.AnimalUiState.Idle
+import com.globant.mvitest.ui.animals.AnimalUiState.Success
 import com.globant.mvitest.ui.animals.MainAnimalIntent.FetchAnimals
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AnimalViewModel @Inject constructor(
     private val getAnimalsUseCase: GetAnimalsUseCase,
+    private val refreshAnimalsUseCase: RefreshAnimalsUseCase,
     @DispatcherIO private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<AnimalUiState>(AnimalUiState.Idle)
-    val uiState: StateFlow<AnimalUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<AnimalUiState> = getAnimalsUseCase()
+        .map { animals ->
+            if (animals.isEmpty()) {
+                Idle
+            } else {
+                Success(animals)
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started =  SharingStarted.WhileSubscribed(5_000),
+            initialValue = AnimalUiState.Loading
+        )
+
+    private val _errorState = MutableStateFlow<String?>(null)
+    val errorState = _errorState.asStateFlow()
 
     fun onIntent(intent: MainAnimalIntent) {
         when (intent) {
-            is FetchAnimals -> fetchAnimals()
+            is FetchAnimals -> syncNetworkData()
         }
     }
 
-    private fun fetchAnimals() {
+    private fun syncNetworkData() {
         viewModelScope.launch(ioDispatcher) {
-            _uiState.value = AnimalUiState.Loading
-            _uiState.value = try {
-                AnimalUiState.Success(getAnimalsUseCase())
+            try {
+                _errorState.value = null
+                refreshAnimalsUseCase()
             } catch (e: Exception) {
-                AnimalUiState.Error(e.localizedMessage ?: "An unknown error occurred")
+                _errorState.value = e.localizedMessage ?: "Failed to sync with server"
             }
         }
     }

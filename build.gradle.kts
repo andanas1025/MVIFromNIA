@@ -8,4 +8,5 @@ plugins {
     alias(libs.plugins.benchmark) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.google.dagger.hilt.android) apply false
+    id("com.google.devtools.ksp") version "2.0.21-1.0.25" apply false
 }

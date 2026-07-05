@@ -1,6 +1,6 @@
 [versions]
 agp = "8.13.2"
-kotlin = "2.1.0"
+kotlin = "2.0.21"
 kotlinxCoroutines = "1.10.1"
 kotlinxDatetime = "0.6.1"
 kotlinxSerializationJson = "1.8.0"
@@ -24,6 +24,7 @@ hilt = "2.55"
 hiltExt = "1.2.0"
 hiltNavigationCompose = "1.2.0"
 androidxDataStore = "1.2.0"
+room = "2.7.0-alpha01"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -62,6 +63,9 @@ dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", ve
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-dataStore = { group = "androidx.datastore", name = "datastore", version.ref = "androidxDataStore" }
 androidx-dataStore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "androidxDataStore" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

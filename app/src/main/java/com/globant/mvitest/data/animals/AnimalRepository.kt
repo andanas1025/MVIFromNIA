@@ -1,7 +1,9 @@
 package com.globant.mvitest.data.animals
 
 import com.globant.mvitest.data.model.Animal
+import kotlinx.coroutines.flow.Flow
 
 interface AnimalRepository {
-    suspend fun getAnimals(): List<Animal>
+    fun getAnimalsStream(): Flow<List<Animal>>
+    suspend fun refreshAnimals()
 }
