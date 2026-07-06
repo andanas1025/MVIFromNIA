@@ -41,4 +41,13 @@ dependencies {
     implementation(libs.dagger.hilt.android)
     ksp(libs.dagger.hilt.compiler)
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation(libs.kotlinx.coroutines.core)
 }

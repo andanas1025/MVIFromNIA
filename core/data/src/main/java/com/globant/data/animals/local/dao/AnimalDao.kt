@@ -1,10 +1,10 @@
-package com.globant.mvitest.data.animals.local.dao
+package com.globant.data.animals.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.globant.mvitest.data.animals.local.model.AnimalEntity
+import com.globant.data.animals.local.model.AnimalEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

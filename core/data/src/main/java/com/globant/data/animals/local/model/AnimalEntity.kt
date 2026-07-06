@@ -1,4 +1,4 @@
-package com.globant.mvitest.data.animals.local.model
+package com.globant.data.animals.local.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

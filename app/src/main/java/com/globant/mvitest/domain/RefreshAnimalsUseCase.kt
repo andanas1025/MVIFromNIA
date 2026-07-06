@@ -1,6 +1,6 @@
 package com.globant.mvitest.domain
 
-import com.globant.mvitest.data.animals.AnimalRepository
+import com.globant.data.animals.AnimalRepository
 import javax.inject.Inject
 
 class RefreshAnimalsUseCase @Inject constructor(

@@ -2,8 +2,8 @@ package com.globant.mvitest.domain
 
 import com.globant.common.result.Result
 import com.globant.common.result.asResult
+import com.globant.data.animals.AnimalRepository
 import com.globant.model.Animal
-import com.globant.mvitest.data.animals.AnimalRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

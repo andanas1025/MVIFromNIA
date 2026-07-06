@@ -1,4 +1,4 @@
-package com.globant.mvitest.data.animals
+package com.globant.data.animals
 
 import com.globant.model.Animal
 import kotlinx.coroutines.flow.Flow

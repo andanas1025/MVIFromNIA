@@ -1,6 +1,6 @@
-package com.globant.mvitest.data.di
+package com.globant.data.di
 
-import com.globant.mvitest.data.animals.AnimalApi
+import com.globant.data.animals.AnimalApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

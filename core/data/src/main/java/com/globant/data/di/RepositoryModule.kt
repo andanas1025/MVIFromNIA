@@ -1,7 +1,7 @@
-package com.globant.mvitest.data.di
+package com.globant.data.di
 
-import com.globant.mvitest.data.animals.AnimalRepository
-import com.globant.mvitest.data.animals.NetworkAnimalRepositoryImpl
+import com.globant.data.animals.AnimalRepository
+import com.globant.data.animals.NetworkAnimalRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

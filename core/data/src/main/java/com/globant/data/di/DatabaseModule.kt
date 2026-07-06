@@ -1,9 +1,9 @@
-package com.globant.mvitest.di
+package com.globant.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.globant.mvitest.data.animals.local.AnimalDatabase
-import com.globant.mvitest.data.animals.local.dao.AnimalDao
+import com.globant.data.animals.local.AnimalDatabase
+import com.globant.data.animals.local.dao.AnimalDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
