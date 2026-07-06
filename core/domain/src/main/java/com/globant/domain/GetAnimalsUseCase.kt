@@ -1,4 +1,4 @@
-package com.globant.mvitest.domain
+package com.globant.domain
 
 import com.globant.common.result.Result
 import com.globant.common.result.asResult
