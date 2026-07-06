@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberImagePainter
-import com.globant.mvitest.data.model.Animal
+import com.globant.model.Animal
 import com.globant.mvitest.ui.theme.MVITestTheme
 import com.globant.mvitest.ui.util.isSystemInDarkTheme
 import com.globant.mvitest.ui.animals.MainAnimalIntent

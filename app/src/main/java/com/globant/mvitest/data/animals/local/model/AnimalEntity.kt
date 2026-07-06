@@ -1,8 +1,8 @@
-package com.globant.mvitest.data.animals.local
+package com.globant.mvitest.data.animals.local.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.globant.mvitest.data.model.Animal
+import com.globant.model.Animal
 
 @Entity(tableName = "animals")
 data class AnimalEntity(

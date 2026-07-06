@@ -1,4 +1,4 @@
-package com.globant.mvitest.data.model
+package com.globant.model
 
 data class Animal(
     val name: String = "",

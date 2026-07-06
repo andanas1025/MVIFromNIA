@@ -1,7 +1,7 @@
 package com.globant.mvitest.data.animals.remote
 
+import com.globant.model.Animal
 import com.globant.mvitest.data.animals.AnimalApi
-import com.globant.mvitest.data.model.Animal
 import javax.inject.Inject
 
 class AnimalRemoteDataSource @Inject constructor(

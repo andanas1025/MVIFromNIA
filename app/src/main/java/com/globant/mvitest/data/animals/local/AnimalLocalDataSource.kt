@@ -1,6 +1,7 @@
 package com.globant.mvitest.data.animals.local
 
 import com.globant.mvitest.data.animals.local.dao.AnimalDao
+import com.globant.mvitest.data.animals.local.model.AnimalEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

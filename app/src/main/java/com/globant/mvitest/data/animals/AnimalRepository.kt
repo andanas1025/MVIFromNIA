@@ -1,6 +1,6 @@
 package com.globant.mvitest.data.animals
 
-import com.globant.mvitest.data.model.Animal
+import com.globant.model.Animal
 import kotlinx.coroutines.flow.Flow
 
 interface AnimalRepository {

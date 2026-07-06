@@ -80,4 +80,5 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(project(":core:common"))
+    implementation(project(":core:model"))
 }

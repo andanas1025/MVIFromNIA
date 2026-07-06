@@ -1,6 +1,7 @@
 package com.globant.mvitest.ui.animals
 
-import com.globant.mvitest.data.model.Animal
+import com.globant.model.Animal
+
 
 sealed interface AnimalUiState {
     data object Idle : AnimalUiState
