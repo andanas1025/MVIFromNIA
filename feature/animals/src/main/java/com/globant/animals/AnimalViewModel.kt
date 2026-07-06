@@ -2,15 +2,13 @@ package com.globant.animals
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.globant.animals.AnimalUiState.Loading
+import com.globant.animals.MainAnimalIntent.Refresh
 import com.globant.common.network.DispatcherDefault
 import com.globant.common.result.Result
 import com.globant.domain.GetAnimalsUseCase
-import com.globant.model.Animal
 import com.globant.domain.RefreshAnimalsUseCase
-import com.globant.animals.AnimalUiState.Idle
-import com.globant.animals.AnimalUiState.Loading
-import com.globant.animals.AnimalUiState.Success
-import com.globant.animals.MainAnimalIntent.Refresh
+import com.globant.model.errors.DomainError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -19,8 +17,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -38,25 +36,44 @@ class AnimalViewModel @Inject constructor(
 
     // Fallback handler for unhandled background exceptions
     private val syncExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        syncError.value = throwable
+        throwable.printStackTrace()
         _errorState.value = "Sync failed: ${throwable.localizedMessage ?: "An error occurred"}"
     }
-    val uiState: StateFlow<AnimalUiState> = getAnimalsUseCase()
-        .map { result: Result<List<Animal>> ->
-            when (result) {
-                is Result.Loading -> Loading
-                is Result.Success -> {
-                    if (result.data.isEmpty()) {
-                        Idle
-                    } else {
-                        Success(result.data)
-                    }
-                }
 
-                is Result.Error -> {
-                    AnimalUiState.Error(result.exception.localizedMessage ?: "An error occurred")
+    private val syncError = MutableStateFlow<Throwable?>(null)
+
+    val uiState: StateFlow<AnimalUiState> = combine(
+        getAnimalsUseCase(),
+        syncError
+    ) { result, error ->
+        when (result) {
+            is Result.Loading -> Loading
+            is Result.Success -> {
+                // If the DB is completely empty AND we just encountered a sync error, show the error!
+                if (result.data.isEmpty() || error != null) {
+                    AnimalUiState.Error(
+                        message = when (error) {
+                            is DomainError.NoInternetConnection -> "No Internet Connection available."
+                            else -> error?.message ?: "Unknown Error"
+                        }
+                    )
+                } else {
+                    // If we have data (cached), show it anyway! (Offline-first beauty)
+                    AnimalUiState.Success(result.data)
                 }
             }
+
+            is Result.Error -> {
+                val message = when (result.exception) {
+                    is DomainError.NoInternetConnection -> "Please check your Wi-Fi!"
+                    is DomainError.NetworkTimeout -> "The server is taking too long."
+                    else -> "Something went wrong."
+                }
+                AnimalUiState.Error(message)
+            }
         }
+    }
         .flowOn(defaultDispatcher)
         .stateIn(
             scope = viewModelScope,
@@ -80,6 +97,7 @@ class AnimalViewModel @Inject constructor(
         // Launch on Main thread loop (default), letting UseCases handle inner I/O switching
         syncJob = viewModelScope.launch(syncExceptionHandler) {
             _errorState.value = null
+            syncError.value = null
 
             // Supervisor boundary insulates concurrent tasks safely
             supervisorScope {

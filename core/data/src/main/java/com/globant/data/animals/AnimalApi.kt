@@ -1,6 +1,6 @@
 package com.globant.data.animals
 
-import com.globant.model.Animal
+import com.globant.model.features.Animal
 import retrofit2.http.GET
 
 interface AnimalApi {

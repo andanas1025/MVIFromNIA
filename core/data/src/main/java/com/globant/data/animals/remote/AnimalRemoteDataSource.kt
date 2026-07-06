@@ -1,7 +1,7 @@
 package com.globant.data.animals.remote
 
-import com.globant.model.Animal
 import com.globant.data.animals.AnimalApi
+import com.globant.model.features.Animal
 import javax.inject.Inject
 
 class AnimalRemoteDataSource @Inject constructor(

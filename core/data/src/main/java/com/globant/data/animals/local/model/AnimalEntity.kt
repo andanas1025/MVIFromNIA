@@ -2,7 +2,7 @@ package com.globant.data.animals.local.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.globant.model.Animal
+import com.globant.model.features.Animal
 
 @Entity(tableName = "animals")
 data class AnimalEntity(

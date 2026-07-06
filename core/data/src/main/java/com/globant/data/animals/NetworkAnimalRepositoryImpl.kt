@@ -1,14 +1,16 @@
 package com.globant.data.animals
 
 import com.globant.common.network.DispatcherIO
-import com.globant.model.Animal
 import com.globant.data.animals.local.AnimalLocalDataSource
 import com.globant.data.animals.local.model.toDomain
 import com.globant.data.animals.local.model.toEntity
 import com.globant.data.animals.remote.AnimalRemoteDataSource
+import com.globant.data.animals.remote.errors.toDomainError
+import com.globant.model.features.Animal
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,9 +24,14 @@ class NetworkAnimalRepositoryImpl @Inject constructor(
 ) : AnimalRepository {
 
     override fun getAnimalsStream(): Flow<List<Animal>> {
-        return localDataSource.getAnimals().map { entities ->
-            entities.map { it.toDomain() }
-        }
+        return localDataSource.getAnimals()
+            .map { entities ->
+                entities.map { it.toDomain() }
+            }
+            .catch { exception ->
+                // 🚀 Catch local database exceptions and throw as Domain Errors
+                throw exception.toDomainError()
+            }
     }
 
     override suspend fun refreshAnimals() = withContext(ioDispatcher) {

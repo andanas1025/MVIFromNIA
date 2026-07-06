@@ -48,20 +48,21 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.globant.model.Animal
+import com.globant.model.features.Animal
 
 private const val BASE_IMAGE_URL =
     "https://raw.githubusercontent.com/CatalinStefan/animalApi/master/"
 
 @Composable
 fun MainAnimalRoute(
-    viewModel: AnimalViewModel = hiltViewModel()
+    viewModel: AnimalViewModel = hiltViewModel(),
+    modifier: Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     MainAnimalScreen(
         uiState = uiState,
-        onRefresh = { viewModel.handleIntent(MainAnimalIntent.Refresh) }
+        onRefresh = { viewModel.handleIntent(MainAnimalIntent.Refresh) },
+        modifier = modifier
     )
 }
 
@@ -85,7 +86,7 @@ fun MainAnimalScreen(
             is AnimalUiState.Success -> AnimalList(animals = state.animals)
             is AnimalUiState.Error -> {
                 IdleScreen(onRefresh)
-                ErrorEffect(message = state.error)
+                ErrorEffect(message = state.message)
             }
         }
     }

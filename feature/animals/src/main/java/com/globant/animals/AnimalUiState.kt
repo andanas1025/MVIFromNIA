@@ -1,12 +1,13 @@
 package com.globant.animals
 
-import com.globant.model.Animal
+import com.globant.model.features.Animal
+
 
 sealed interface AnimalUiState {
     data object Idle : AnimalUiState
     data object Loading : AnimalUiState
     data class Success(val animals: List<Animal>) : AnimalUiState
-    data class Error(val error: String) : AnimalUiState
+    data class Error(val message: String) : AnimalUiState
 
     /**
      * Returns `true` if the state wasn't loaded yet and it should keep showing the splash screen.
