@@ -1,11 +1,11 @@
 package com.globant.mvitest.data.animals
 
+import com.globant.common.network.DispatcherIO
 import com.globant.model.Animal
 import com.globant.mvitest.data.animals.local.AnimalLocalDataSource
 import com.globant.mvitest.data.animals.local.model.toDomain
 import com.globant.mvitest.data.animals.local.model.toEntity
 import com.globant.mvitest.data.animals.remote.AnimalRemoteDataSource
-import com.globant.mvitest.di.DispatcherIO
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

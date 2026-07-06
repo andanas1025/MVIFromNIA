@@ -2,9 +2,9 @@ package com.globant.mvitest.ui.animals
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.globant.common.network.DispatcherDefault
 import com.globant.common.result.Result
 import com.globant.model.Animal
-import com.globant.mvitest.di.DispatcherDefault
 import com.globant.mvitest.domain.GetAnimalsUseCase
 import com.globant.mvitest.domain.RefreshAnimalsUseCase
 import com.globant.mvitest.ui.animals.AnimalUiState.Idle
