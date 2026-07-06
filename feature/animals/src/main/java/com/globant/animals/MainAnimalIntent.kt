@@ -1,4 +1,4 @@
-package com.globant.mvitest.ui.animals
+package com.globant.animals
 
 sealed class MainAnimalIntent {
     object FetchAnimals: MainAnimalIntent()

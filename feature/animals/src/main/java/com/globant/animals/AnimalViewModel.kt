@@ -1,4 +1,4 @@
-package com.globant.mvitest.ui.animals
+package com.globant.animals
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,10 +7,10 @@ import com.globant.common.result.Result
 import com.globant.domain.GetAnimalsUseCase
 import com.globant.model.Animal
 import com.globant.domain.RefreshAnimalsUseCase
-import com.globant.mvitest.ui.animals.AnimalUiState.Idle
-import com.globant.mvitest.ui.animals.AnimalUiState.Loading
-import com.globant.mvitest.ui.animals.AnimalUiState.Success
-import com.globant.mvitest.ui.animals.MainAnimalIntent.FetchAnimals
+import com.globant.animals.AnimalUiState.Idle
+import com.globant.animals.AnimalUiState.Loading
+import com.globant.animals.AnimalUiState.Success
+import com.globant.animals.MainAnimalIntent.FetchAnimals
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
