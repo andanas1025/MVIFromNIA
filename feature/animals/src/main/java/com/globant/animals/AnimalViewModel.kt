@@ -10,7 +10,7 @@ import com.globant.domain.RefreshAnimalsUseCase
 import com.globant.animals.AnimalUiState.Idle
 import com.globant.animals.AnimalUiState.Loading
 import com.globant.animals.AnimalUiState.Success
-import com.globant.animals.MainAnimalIntent.FetchAnimals
+import com.globant.animals.MainAnimalIntent.Refresh
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -67,9 +67,9 @@ class AnimalViewModel @Inject constructor(
     private val _errorState = MutableStateFlow<String?>(null)
     val errorState = _errorState.asStateFlow()
 
-    fun onIntent(intent: MainAnimalIntent) {
+    fun handleIntent(intent: MainAnimalIntent) {
         when (intent) {
-            is FetchAnimals -> syncNetworkData()
+            is Refresh -> syncNetworkData()
         }
     }
 

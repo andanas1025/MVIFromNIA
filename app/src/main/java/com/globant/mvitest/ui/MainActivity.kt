@@ -1,4 +1,4 @@
-package com.globant.mvitest
+package com.globant.mvitest.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,8 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.globant.animals.AnimalUiState
 import com.globant.animals.AnimalViewModel
-import com.globant.animals.MainAnimalIntent
-import com.globant.animals.MainScreen
+import com.globant.animals.MainAnimalRoute
 import com.globant.mvitest.ui.theme.MVITestTheme
 import com.globant.mvitest.ui.util.isSystemInDarkTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,10 +35,6 @@ class MainActivity : ComponentActivity() {
                 disableDynamicTheming = false // Default fallback, or read from mainViewModel
             )
         )
-
-        val onButtonClick: () -> Unit = {
-            animalViewModel.onIntent(MainAnimalIntent.FetchAnimals)
-        }
 
         splashScreen.setKeepOnScreenCondition {
             animalViewModel.uiState.value is AnimalUiState.Loading
@@ -64,11 +58,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MVITestTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainScreen(
-                        animalViewModel,
-                        onButtonClick,
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    MainAnimalRoute()
                 }
             }
         }

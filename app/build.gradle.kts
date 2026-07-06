@@ -63,25 +63,10 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.6")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.6")
-    implementation("io.coil-kt:coil-compose:1.3.2")
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     implementation(libs.dagger.hilt.android)
     ksp(libs.dagger.hilt.compiler)
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
-    //room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
-
-    implementation(project(":core:common"))
-    implementation(project(":core:model"))
-    implementation(project(":core:data"))
-    implementation(project(":core:domain"))
     implementation(project(":feature:animals"))
 }

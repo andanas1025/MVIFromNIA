@@ -1,5 +1,5 @@
 package com.globant.animals
 
-sealed class MainAnimalIntent {
-    object FetchAnimals: MainAnimalIntent()
+sealed interface MainAnimalIntent {
+    data object Refresh: MainAnimalIntent
 }
